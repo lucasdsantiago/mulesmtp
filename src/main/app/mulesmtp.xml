@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" 
+	xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" 
+	xmlns:smtps="http://www.mulesoft.org/schema/mule/smtps"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" 
+	xmlns="http://www.mulesoft.org/schema/mule/core" 
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+http://www.mulesoft.org/schema/mule/smtps http://www.mulesoft.org/schema/mule/smtps/current/mule-smtps.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+    <smtp:gmail-connector name="Gmail" fromAddress="pucminastcceai%40gmail.com" subject="teste" validateConnections="true" doc:name="Gmail">
+    </smtp:gmail-connector>
+
+	
+    <flow name="FluxoSMTP" doc:name="FluxoSMTP">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" doc:name="HTTP"/>
+        <component class="pucminas.teste.mulerest.resource.components.SMTPComponent" doc:name="Java"/>
+        <smtp:outbound-endpoint 
+        	host="smtp.gmail.com" 
+        	port="587" 
+        	user="pucminastcceai%40gmail.com" 
+        	password="pucminas"  
+        	from="Lucas" 
+	        to="#[flowVars['destinatario']]" 
+	        responseTimeout="10000" 
+	        connector-ref="Gmail" 
+	        doc:name="Send notification email"
+	        subject="TCC - CONFIRMACAO DECLARACAO DE BENS" />
+        <logger message="E-mail enviado com sucesso!" level="INFO" doc:name="Logger"/>
+    </flow>
+    
+    
+</mule>
